@@ -9,4 +9,5 @@ install:
 script:
 - hass -c . --script check_config
 after_script:
-    - bash ./telegram_notification.sh
+- chmod +x ./telegram_notification.sh
+- bash ./telegram_notification.sh
