@@ -1,0 +1,3 @@
+- platform: switch
+  name: Vitrine
+  entity_id: switch.vitrine

@@ -1,0 +1,177 @@
+sensor.humidity_158d0001268fcf:
+  friendly_name: Xiao Bath Humidity
+  icon: mdi:water-percent
+
+sensor.temperature_158d0001268fcf:
+  friendly_name: Xiao Bath Temp
+
+sensor.humidity_158d0001570fa6:
+  friendly_name: Xiao Flur Humidity
+  icon: mdi:water-percent
+
+sensor.temperature_158d0001570fa6:
+  friendly_name: Xiao Flur Temp
+
+sensor.humidity_158d000155cb1b:
+  friendly_name: Xiao Bedroom Humidity
+  icon: mdi:water-percent
+
+sensor.temperature_158d000155cb1b:
+  friendly_name: Xiao Bedroom Temp
+
+sensor.humidity_158d00012d981f:
+  friendly_name: Xiao Office Humidity
+  icon: mdi:water-percent
+
+sensor.temperature_158d00012d981f:
+  friendly_name: Xiao Office Temp
+
+
+binary_sensor.door_window_sensor_158d0004201dfb:
+  friendly_name: Xiao Office Window
+
+binary_sensor.door_window_sensor_158d0004234944:
+  friendly_name: Xiao Bath Window
+
+binary_sensor.door_window_sensor_158d00040be0f4:
+  friendly_name: Xiao Bedroom Right Window
+
+binary_sensor.door_window_sensor_158d00040be0ec:
+  friendly_name: Xiao Bedroom Left Window
+
+binary_sensor.door_window_sensor_158d00042321c9:
+  friendly_name: Xiao Kitchen Left Window
+
+binary_sensor.door_window_sensor_158d00041fda51:
+  friendly_name: Xiao Kitchen Right Window
+
+binary_sensor.door_window_sensor_158d0002bfa26f:
+  friendly_name: Xiao Living Window
+
+sensor.sn1_temperature:
+  friendly_name: Living room Temp
+sensor.sn1_real_feel:
+  friendly_name: Living room Temp feel
+sensor.sn1_humidity:
+  friendly_name: Living room Humidity
+  icon: mdi:water-percent
+sensor.sn1_ldr:
+  friendly_name: Living room Lumen
+  icon: mdi:lightbulb-on-outline
+sensor.sn1_pir:
+  friendly_name: Living room Motion
+sensor.illumination_f0b429cc1094:
+  friendly_name: Gateway Lumen
+  icon: mdi:lightbulb-on-outline
+
+sensor.illumination_158d0001a6622f:
+  friendly_name: Bath Lx
+  icon: mdi:lightbulb-on-outline
+
+binary_sensor.motion_sensor_158d0001a6622f:
+  friendly_name: Bath Motion
+
+sensor.illumination_158d0004521bf6:
+  friendly_name: Bath 2 Lx
+  icon: mdi:lightbulb-on-outline
+
+binary_sensor.motion_sensor_158d0004521bf6:
+  friendly_name: Bath 2 Motion
+
+# binary_sensor.wall_switch_right_158d00013e6924:
+#   friendly_name: Livingroom right
+
+# binary_sensor.wall_switch_left_158d00013e6924:
+#   friendly_name: Livingroom right
+# binary_sensor.wall_switch_right_158d00013e72f2:
+#   friendly_name: Bedroom right
+
+# binary_sensor.wall_switch_left_158d00013e72f2:
+#   friendly_name: Bedroom right
+
+binary_sensor.switch_158d000155e18a:
+  friendly_name: Smart switch Flur
+
+binary_sensor.motion_sensor_158d00015c9e73:
+  friendly_name: Flur Motion
+
+# binary_sensor.wall_switch_left_158d000128ccc1:
+#   friendly_name: maybe kitchen
+
+# binary_sensor.wall_switch_left_158d000183f656:
+#   friendly_name: maybe bath
+
+# binary_sensor.wall_switch_right_158d000128ccc1:
+#   friendly_name: maybe kitchen
+
+# binary_sensor.wall_switch_right_158d000183f656:
+#   friendly_name: maybe bath
+
+zone.home:
+  track_ios: true
+#sensor.ha_startup_duration:
+#  friendly_name: Startup Duration
+#  icon: mdi:clock-start
+#sensor.newest_ha_version:
+#  icon: mdi:update
+switch.tv1:
+  icon: mdi:television-classic
+switch.tv2:
+  icon: mdi:television-classic
+switch.livingroomlight:
+  icon: mdi:lightbulb
+switch.bedroomlight:
+  icon: mdi:ceiling-light
+switch.wardrobe:
+  icon: mdi:lightbulb
+input_boolean.pc_input:
+  icon: mdi:desktop-classic
+switch.pc_bulb:
+  icon: mdi:power-socket-eu
+switch.wake_on_lan:
+  icon: mdi:lan-connect
+switch.ambientlight:
+  friendly_name: Ambilight
+  icon: mdi:led-outline
+light.gateway_light_f0b429cc1094:
+  friendly_name: Night light
+light.bedsidelight:
+  icon: mdi:lamp
+# switch.hdmi_1:
+#   icon: mdi:remote
+# switch.sat_1:
+#   icon: mdi:remote
+# switch.dmax:
+#   icon: mdi:remote
+# switch.prosieben:
+#   icon: mdi:remote
+# switch.fanheater:
+#   icon: mdi:fan
+# sensor.last_boot:
+#   icon: mdi:clock-end
+
+switch.grafana:
+  icon: mdi:chart-line-variant
+switch.certbot:
+  icon: mdi:robot
+switch.nginx:
+  icon: mdi:lock
+switch.filebrowser:
+  icon: mdi:file-multiple
+switch.jdownloader:
+  icon: mdi:download
+switch.noip:
+  icon: mdi:certificate
+switch.openvpn:
+  icon: mdi:key
+switch.watchtower:
+  icon: mdi:eye
+switch.xteve:
+  icon: mdi:television-box
+switch.seafile:
+  icon: mdi:file-cloud
+switch.mqtt:
+  icon: mdi:ladybug
+
+light.vitrine:
+  icon: mdi:floor-lamp

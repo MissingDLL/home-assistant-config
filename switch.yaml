@@ -1,0 +1,222 @@
+# - platform: rest
+#   name: "Rolladen Links"
+#   scan_interval: 5
+#   resource: http://192.168.3.90/roller/0
+#   body_on: 'go=open'
+#   body_off: 'go=close'
+#   is_on_template: '{{ value_json.last_direction == "open" }}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+#
+# - platform: rest
+#   name: "Rolladen Rechts"
+#   scan_interval: 5
+#   resource: http://192.168.3.89/roller/0
+#   body_on: 'go=open'
+#   body_off: 'go=close'
+#   is_on_template: '{{ value_json.last_direction == "open" }}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+
+# - platform: rest
+#   name: "Wohnzimmerlampe"
+#   scan_interval: 5
+#   resource: http://192.168.3.86/relay/0
+#   body_on: 'turn=on'
+#   body_off: 'turn=off'
+#   is_on_template: '{{ value_json.ison == true}}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+#
+# - platform: rest
+#   name: "Esszimmerlampe"
+#   scan_interval: 5
+#   resource: http://192.168.3.86/relay/1
+#   body_on: 'turn=on'
+#   body_off: 'turn=off'
+#   is_on_template: '{{ value_json.ison == true}}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+#
+# - platform: rest
+#   name: "Schlafzimmerlampe"
+#   scan_interval: 5
+#   resource: http://192.168.3.84/relay/0
+#   body_on: 'turn=on'
+#   body_off: 'turn=off'
+#   is_on_template: '{{ value_json.ison == true}}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+#
+# - platform: rest
+#   name: "Flurlampe"
+#   scan_interval: 5
+#   resource: http://192.168.3.85/relay/0
+#   body_on: 'turn=on'
+#   body_off: 'turn=off'
+#   is_on_template: '{{ value_json.ison == true}}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+#
+# - platform: rest
+#   name: "Badezimmerlampe"
+#   scan_interval: 5
+#   resource: http://192.168.3.83/relay/0
+#   body_on: 'turn=on'
+#   body_off: 'turn=off'
+#   is_on_template: '{{ value_json.ison == true}}'
+#   headers:
+#     content-type: application/x-www-form-urlencoded
+#     Authorization: Basic SGFfc2hlbGx5OnNoM2xseS1IQTEzMDE/
+
+
+# - platform: mqtt
+#   command_topic: "test"
+#   state_topic: "test/bedroom/switch1"
+#   command_topic: "test/bedroom/switch1/set"
+#   availability_topic: "test/bedroom/switch1/available"
+#   payload_on: "ON"
+#   payload_off: "OFF"
+#   state_on: "ON"
+#   state_off: "OFF"
+#   optimistic: false
+#   qos: 1
+#   retain: true
+
+#### Docker Containers
+
+- platform: rest
+  resource: http://192.168.3.100:8126/container/grafana
+  name: Grafana
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/seafile-pro
+  name: Seafile
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/jdownloader-2
+  name: JDownloader
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/guacamole
+  name: Guacamole
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/portainer
+  name: Portainer
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/nginx
+  name: Nginx
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/mqtt
+  name: Mqtt
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/certbot
+  name: Certbot
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/watchtower
+  name: Watchtower
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/filebrowser
+  name: Filebrowser
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/bitwarden
+  name: Bitwarden
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/influxdb
+  name: InfluxDB
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/node-red
+  name: Node-Red
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/tasmoadmin
+  name: Tasmoadmin
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/ddclient
+  name: DDDClient
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+- platform: rest
+  resource: http://192.168.3.100:8126/container/netdata
+  name: Netdata
+  body_on: '{"state": "start"}'
+  body_off: '{"state": "stop"}'
+  is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+  
+  
+  
+  
+  
+
+
+#### MQTT
+
+- platform: mqtt
+  name: "OfficeLamp"
+  command_topic: "cmnd/sonoff3/power"
+  state_topic: "stat/sonoff3/POWER"
+  qos: 1
+  payload_on: "ON"
+  payload_off: "OFF"
+  retain: true
+- platform: mqtt
+  name: "AmbientLight"
+  command_topic: "cmnd/sonoff5/power"
+  state_topic: "stat/sonoff5/POWER"
+  qos: 1
+  payload_on: "ON"
+  payload_off: "OFF"
+  retain: true
+- platform: mqtt
+  name: "TV2"
+  command_topic: "cmnd/sonoff4/power"
+  state_topic: "stat/sonoff4/POWER"
+  qos: 1
+  payload_on: "ON"
+  payload_off: "OFF"
+  retain: true

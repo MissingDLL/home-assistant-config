@@ -1,0 +1,33 @@
+# - platform: mqtt
+#   name: "Rolladen rechts"
+#   command_topic: "shellies/shellyswitch-13476D/roller/0/command"
+#   position_topic: "shellies/shellyswitch-13476D/roller/0/pos"
+#   set_position_topic: "shellies/shellyswitch-13476D/roller/0/command/pos"
+#   availability_topic: "shellies/shellyswitch-13476D/online"
+#   payload_available: "true"
+#   payload_not_available: "false"
+#   qos: 1
+#   retain: true
+#   payload_open: "open"
+#   payload_close: "close"
+#   payload_stop: "stop"
+#   position_open: 100
+#   position_closed: 0
+#   optimistic: false
+
+# - platform: mqtt
+#   name: "Rolladen links"
+#   command_topic: "shellies/shellyswitch-13597A/roller/0/command"
+#   position_topic: "shellies/shellyswitch-13597A/roller/0/pos"
+#   set_position_topic: "shellies/shellyswitch-13597A/roller/0/command/pos"
+#   availability_topic: "shellies/shellyswitch-13597A/online"
+#   payload_available: "true"
+#   payload_not_available: "false"
+#   qos: 1
+#   retain: true
+#   payload_open: "open"
+#   payload_close: "close"
+#   payload_stop: "stop"
+#   position_open: 100
+#   position_closed: 0
+#   optimistic: false

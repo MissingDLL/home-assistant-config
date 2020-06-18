@@ -1,0 +1,523 @@
+- platform: template
+  sensors:
+    unavailable:
+      friendly_name: 'Sensors that need attention'
+      value_template: >
+        {{ states | selectattr('state', 'in', ['unavailable', 'unknown', 'none']) | list | length }}
+      attribute_templates:
+        entities: >
+          {{ states | selectattr('state', 'in', ['unavailable', 'unknown', 'none']) | map(attribute='entity_id') | list | join('\n') }}
+  # Geht aktuell nicht -> homeassistant.exceptions.InvalidStateError: Invalid state encountered for entity id: sensor.low_battery. State max length is 255 characters.
+#2020-05-20 00:13:18 ERROR (SyncWorker_11) [homeassistant.components.telegram_bot] Error sending message: Can't parse entities: can't find end of the entity starting at byte offset 858. Args: (342092659, '21 Devices are in status unavailable. <state sensor.unavailable=21; entities=cover.shelly_shsw_21_13476d\ncover.shelly_shsw_21_13597a\nlight.shelly_shdm_1_db3a40\nlight.shelly_shdm_1_f39a58\nlight.shelly_shsw_1_229f27\nlight.shelly_shsw_1_22fc49\nlight.shelly_shsw_1_22fd73\nsensor.livingroom_wall_switch_battery\nsensor.low_battery\nsensor.shelly_shdm_1_db3a40_current_consumption\nsensor.shelly_shdm_1_db3a40_total_consumption\nsensor.shelly_shdm_1_f39a58_current_consumption\nsensor.shelly_shdm_1_f39a58_total_consumption\nsensor.shelly_shplg_s_b85c3b_current_consumption\nsensor.shelly_shplg_s_b85c3b_total_consumption\nsensor.shelly_shsw_21_13476d_current_consumption\nsensor.shelly_shsw_21_13476d_total_consumption\nsensor.shelly_shsw_21_13597a_current_consumption\nsensor.shelly_shsw_21_13597a_total_consumption\nsensor.unavailable\nswitch.shelly_shplg_s_b85c3b, friendly_name=Sensors that need attention @ 2020-05-20T00:13:18.082957+02:00>'), kwargs: {'parse_mode': 'Markdown', 'disable_notification': False, 'disable_web_page_preview': None, 'reply_to_message_id': None, 'reply_markup': None, 'timeout': None}
+
+    # low_battery:
+    #   friendly_name: "Low Battery"
+    #   value_template: >
+    #     {%- set threshold = 40 -%}
+    #     {%- set domains = ['light', 'switch', 'sensor', 'binary_sensor'] -%}
+    #     {%- for domain in domains -%}
+    #     {%- for item in states[domain] if ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+    #         {{ item.attributes.friendly_name }}{%- if not loop.last %}, {% endif -%}
+    #     {%- endfor -%}
+    #     {%- endfor -%}
+
+    server_current:
+      value_template: '{{ states.switch.server.attributes["current_power_w"] | replace(" W", "") | float }}'
+      icon_template: mdi:gauge
+      unit_of_measurement: 'W'
+
+    server_total:
+      value_template: '{{ states.switch.server.attributes["total_energy_kwh"] | replace(" kW", "") | float }}'
+      icon_template: mdi:gauge
+      unit_of_measurement: 'kW'
+
+    flur_motion_battery:
+      friendly_name: 'Flur Motion Sensor Battery'
+      value_template: >-
+        {{ (states.binary_sensor.motion_sensor_158d00015c9e73.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.flur_motion_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+    bath_motion_battery:
+      friendly_name: 'Bath Motion Sensor Battery'
+      value_template: >-
+        {{ (states.binary_sensor.motion_sensor_158d0001a6622f.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.bath_motion_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+
+    bedroom_battery:
+      friendly_name: 'Bedroom Sensor Battery'
+      value_template: >-
+        {{ (states.sensor.temperature_158d000155cb1b.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.bedroom_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+
+    office_battery:
+      friendly_name: 'Office Sensor Battery'
+      value_template: >-
+        {{ (states.sensor.temperature_158d00012d981f.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.office_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+
+    bath_battery:
+      friendly_name: 'Bath Sensor Battery'
+      value_template: >-
+        {{ (states.sensor.temperature_158d0001268fcf.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.bath_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+
+    flur_battery:
+      friendly_name: 'Flur Sensor Battery'
+      value_template: >-
+        {{ (states.sensor.temperature_158d0001570fa6.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.flur_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+### Switches
+
+    bedroom_smart_switch_battery:
+      friendly_name: 'Bedroom smart switch Battery'
+      value_template: >-
+        {{ (states.binary_sensor.switch_158d000155e18a.attributes|default).battery_level|default|int('unknown') }}
+      icon_template: >-
+        {% set battery_level = states('sensor.bedroom_smart_switch_battery')|int('unknown') %}
+        {% if battery_level == 'unknown' %}
+            mdi:battery-unknown
+          {% else %}
+            {% if battery_level <= 5 %}
+              mdi:battery-alert
+            {% elif battery_level <= 10 %}
+              mdi:battery-10
+            {% elif battery_level <= 20 %}
+              mdi:battery-20
+            {% elif battery_level <= 30 %}
+              mdi:battery-30
+            {% elif battery_level <= 40 %}
+              mdi:battery-40
+            {% elif battery_level <= 50 %}
+              mdi:battery-50
+            {% elif battery_level <= 60 %}
+              mdi:battery-60
+            {% elif battery_level <= 70 %}
+              mdi:battery-70
+            {% elif battery_level <= 80 %}
+              mdi:battery-80
+            {% elif battery_level <= 90 %}
+              mdi:battery-90
+            {% else %}
+              mdi:battery
+            {% endif %}
+          {% endif %}
+      unit_of_measurement: "%"
+
+
+    # bedroom_wall_switch_battery:
+    #   friendly_name: 'Bedroom wall switch Battery'
+    #   value_template: >-
+    #     {{ (states.binary_sensor.wall_switch_both_158d00013e72f2.attributes|default).battery_level|default|int('unknown') }}
+    #   icon_template: >-
+    #     {% set battery_level = states('sensor.bedroom_wall_switch_battery')|int('unknown') %}
+    #     {% if battery_level == 'unknown' %}
+    #         mdi:battery-unknown
+    #       {% else %}
+    #         {% if battery_level <= 5 %}
+    #           mdi:battery-alert
+    #         {% elif battery_level <= 10 %}
+    #           mdi:battery-10
+    #         {% elif battery_level <= 20 %}
+    #           mdi:battery-20
+    #         {% elif battery_level <= 30 %}
+    #           mdi:battery-30
+    #         {% elif battery_level <= 40 %}
+    #           mdi:battery-40
+    #         {% elif battery_level <= 50 %}
+    #           mdi:battery-50
+    #         {% elif battery_level <= 60 %}
+    #           mdi:battery-60
+    #         {% elif battery_level <= 70 %}
+    #           mdi:battery-70
+    #         {% elif battery_level <= 80 %}
+    #           mdi:battery-80
+    #         {% elif battery_level <= 90 %}
+    #           mdi:battery-90
+    #         {% else %}
+    #           mdi:battery
+    #         {% endif %}
+    #       {% endif %}
+    #   unit_of_measurement: "%"
+
+
+    # kitchen_wall_switch_battery:
+    #   friendly_name: 'Kitchen wall switch Battery'
+    #   value_template: >-
+    #     {{ (states.binary_sensor.wall_switch_both_158d000128ccc1.attributes|default).battery_level|default|int('unknown') }}
+    #   icon_template: >-
+    #     {% set battery_level = states('sensor.kitchen_wall_switch_battery')|int('unknown') %}
+    #     {% if battery_level == 'unknown' %}
+    #         mdi:battery-unknown
+    #       {% else %}
+    #         {% if battery_level <= 5 %}
+    #           mdi:battery-alert
+    #         {% elif battery_level <= 10 %}
+    #           mdi:battery-10
+    #         {% elif battery_level <= 20 %}
+    #           mdi:battery-20
+    #         {% elif battery_level <= 30 %}
+    #           mdi:battery-30
+    #         {% elif battery_level <= 40 %}
+    #           mdi:battery-40
+    #         {% elif battery_level <= 50 %}
+    #           mdi:battery-50
+    #         {% elif battery_level <= 60 %}
+    #           mdi:battery-60
+    #         {% elif battery_level <= 70 %}
+    #           mdi:battery-70
+    #         {% elif battery_level <= 80 %}
+    #           mdi:battery-80
+    #         {% elif battery_level <= 90 %}
+    #           mdi:battery-90
+    #         {% else %}
+    #           mdi:battery
+    #         {% endif %}
+    #       {% endif %}
+    #   unit_of_measurement: "%"
+
+
+    # bath_wall_switch_battery:
+    #   friendly_name: "Bath Wall Switch Battery"
+    #   value_template: >-
+    #     {{ (states.binary_sensor.wall_switch_both_158d000183f656.attributes|default).battery_level|default|int('unknown') }}
+    #   icon_template: >-
+    #     {% set battery_level = states('sensor.bath_wall_switch_battery')|int('unknown') %}
+    #     {% if battery_level == 'unknown' %}
+    #         mdi:battery-unknown
+    #       {% else %}
+    #         {% if battery_level <= 5 %}
+    #           mdi:battery-alert
+    #         {% elif battery_level <= 10 %}
+    #           mdi:battery-10
+    #         {% elif battery_level <= 20 %}
+    #           mdi:battery-20
+    #         {% elif battery_level <= 30 %}
+    #           mdi:battery-30
+    #         {% elif battery_level <= 40 %}
+    #           mdi:battery-40
+    #         {% elif battery_level <= 50 %}
+    #           mdi:battery-50
+    #         {% elif battery_level <= 60 %}
+    #           mdi:battery-60
+    #         {% elif battery_level <= 70 %}
+    #           mdi:battery-70
+    #         {% elif battery_level <= 80 %}
+    #           mdi:battery-80
+    #         {% elif battery_level <= 90 %}
+    #           mdi:battery-90
+    #         {% else %}
+    #           mdi:battery
+    #         {% endif %}
+    #       {% endif %}
+    #   unit_of_measurement: "%"
+
+
+    # livingroom_wall_switch_battery:
+    #   friendly_name: 'Living room wall switch Battery'
+    #   value_template: >-
+    #     {{ (states.binary_sensor.wall_switch_both_158d00013e6924.attributes|default).battery_level|default|int('unknown') }}
+    #   icon_template: >-
+    #     {% set battery_level = states('sensor.livingroom_wall_switch_battery')|int('unknown') %}
+    #     {% if battery_level == 'unknown' %}
+    #         mdi:battery-unknown
+    #       {% else %}
+    #         {% if battery_level <= 5 %}
+    #           mdi:battery-alert
+    #         {% elif battery_level <= 10 %}
+    #           mdi:battery-10
+    #         {% elif battery_level <= 20 %}
+    #           mdi:battery-20
+    #         {% elif battery_level <= 30 %}
+    #           mdi:battery-30
+    #         {% elif battery_level <= 40 %}
+    #           mdi:battery-40
+    #         {% elif battery_level <= 50 %}
+    #           mdi:battery-50
+    #         {% elif battery_level <= 60 %}
+    #           mdi:battery-60
+    #         {% elif battery_level <= 70 %}
+    #           mdi:battery-70
+    #         {% elif battery_level <= 80 %}
+    #           mdi:battery-80
+    #         {% elif battery_level <= 90 %}
+    #           mdi:battery-90
+    #         {% else %}
+    #           mdi:battery
+    #         {% endif %}
+    #       {% endif %}
+    #   unit_of_measurement: "%"
+
+
+- platform: integration
+  source:  sensor.server_total
+  name: current_power_w
+  #unit_prefix: k
+  #unit: W
+  #round: 2
+
+
+### Plant 1
+- platform: mqtt
+  state_topic: miflora/herbs/temperature
+  name: "MiFlora Temperature"
+  unit_of_measurement: "°C"
+- platform: mqtt
+  state_topic: miflora/herbs/moisture
+  name: "MiFlora Moisture"
+  unit_of_measurement: "%"
+- platform: mqtt
+  state_topic: miflora/herbs/light
+  name: "MiFlora Light"
+  unit_of_measurement: "lux"
+- platform: mqtt
+  state_topic: miflora/herbs/conductivity
+  name: "MiFlora Conductivity"
+  unit_of_measurement: "us/cm"
+- platform: mqtt
+  state_topic: miflora/herbs/battery
+  name: "MiFlora Battery"
+  unit_of_measurement: "%"
+
+
+### Plant 2
+- platform: mqtt
+  state_topic: miflora/herbs2/temperature
+  name: "MiFlora Temperature"
+  unit_of_measurement: "°C"
+- platform: mqtt
+  state_topic: miflora/herbs2/moisture
+  name: "MiFlora Moisture"
+  unit_of_measurement: "%"
+- platform: mqtt
+  state_topic: miflora/herbs2/light
+  name: "MiFlora Light"
+  unit_of_measurement: "lux"
+- platform: mqtt
+  state_topic: miflora/herbs2/conductivity
+  name: "MiFlora Conductivity"
+  unit_of_measurement: "us/cm"
+- platform: mqtt
+  state_topic: miflora/herbs2/battery
+  name: "MiFlora Battery"
+  unit_of_measurement: "%"
+
+
+- platform: mqtt
+  state_topic: "bruh/sensornode1"
+  name: "SN1 Humidity"
+  unit_of_measurement: "%"
+  value_template: '{{ value_json.humidity | round(1) }}'
+  qos: 1
+#  retain: true
+
+- platform: mqtt
+  state_topic: "bruh/sensornode1"
+  name: "SN1 LDR"
+  ##This sensor is not calibrated to actual LUX. Rather, this a map of the input voltage ranging from 0 - 1023.
+  unit_of_measurement: "lm"
+  value_template: '{{ value_json.ldr }}'
+  qos: 1
+#  retain: true
+
+- platform: mqtt
+  state_topic: "bruh/sensornode1"
+  name: "SN1 PIR"
+  value_template: '{{ value_json.motion }}'
+  qos: 1
+#  retain: true
+
+- platform: mqtt
+  state_topic: "bruh/sensornode1"
+  name: "SN1 Temperature"
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.temperature | round(1) }}'
+  qos: 1
+#  retain: true
+
+- platform: mqtt
+  state_topic: "bruh/sensornode1"
+  name: "SN1 Real Feel"
+  unit_of_measurement: "°C"
+  value_template: '{{ value_json.heatIndex | round(1) }}'
+  qos: 1
+
+

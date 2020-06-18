@@ -1,0 +1,346 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret lat_home
+  longitude: !secret long_home
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 91
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  time_zone: Europe/Berlin
+  customize: !include customize.yaml
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+panel_iframe:
+  grafana:
+    title: 'Grafana'
+    url: 'https://192.168.3.100:3000'
+    icon: mdi:graphql
+  node_red:
+    title: 'Node-Red'
+    url: 'http://192.168.3.100:1880/node-red'
+    icon: mdi:monitor-edit
+  portainer:
+    title: 'Portainer'
+    url: 'https://portainer.dllnas.de'
+    icon: mdi:docker
+  bitwarden:
+    title: 'Bitwarden'
+    url: 'https://bitwarden.dllnas.de'
+    icon: mdi:onepassword
+  filebrowser:
+    title: 'Filebrowser'
+    url: 'https://filebrowser.dllnas.de'
+    icon: mdi:file-outline
+
+sun:
+  elevation: 91
+
+frontend:
+  themes: !include_dir_merge_named themes/
+
+zone:
+  name: Home
+  latitude: !secret lat_home
+  longitude: !secret long_home
+  icon: mdi:home
+  radius: 350
+
+zone 2:
+  name: Work
+  latitude: !secret lat_work
+  longitude: !secret long_work
+  icon: mdi:worker
+  radius: 500
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+sensor: !include sensors.yaml
+cover: !include covers.yaml
+notify: !include notify.yaml
+switch: !include switch.yaml
+light: !include light.yaml
+
+ios:
+
+influxdb:
+  host: 192.168.3.100
+
+###
+###
+tplink:
+  discovery: false
+  switch:
+    # TV1
+    - host: 192.168.3.26
+    # PC
+    - host: 192.168.3.32
+    # Server
+    - host: 192.168.3.54
+    # Vitrine
+    - host: 192.168.3.50
+
+
+plant:
+  flower1:
+    sensors:
+      moisture: sensor.miflora_herbs_moisture
+      battery: sensor.miflora_herbs_battery
+      temperature: sensor.miflora_herbs_temperature
+      conductivity: sensor.miflora_herbs_conductivity
+      brightness: sensor.miflora_herbs_light
+    min_moisture: 15
+    max_moisture: 60
+    min_battery: 17
+    min_conductivity: 110
+    min_temperature: 8
+  flower2:
+    sensors:
+      moisture: sensor.miflora_herbs2_moisture
+      battery: sensor.miflora_herbs2_battery
+      temperature: sensor.miflora_herbs2_temperature
+      conductivity: sensor.miflora_herbs2_conductivity
+      brightness: sensor.miflora_herbs2_light
+    min_moisture: 15
+    max_moisture: 60
+    min_battery: 17
+    min_conductivity: 110
+    min_temperature: 8
+
+
+device_tracker:
+  - platform: fritz
+    track_new_devices: false
+    interval_seconds: 20
+    consider_home: 180
+    host: 192.168.3.1
+    new_device_defaults:
+      track_new_devices: false
+  - platform: tado
+    username: !secret tado_user
+    password: !secret tado_pw
+    home_id: !secret tado_home_id
+
+mqtt:
+  broker: 192.168.3.100
+  port: 1883
+  client_id: home-assistant-1
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+  birth_message:
+    topic: 'homeassistant/status'
+    payload: 'online'
+
+xiaomi_aqara:
+  discovery_retry: 15
+  no_motion_after_sec: 5
+  gateways:
+    #- mac: !secret xiaomi_sid
+    - key: !secret xiaomi_key
+      #host: 192.168.3.6
+
+# vacuum:
+#   - platform: xiaomi_miio
+#     host: 192.168.3.43
+#     token: !secret xiaomi_vaccum_token
+
+fan:
+  - platform: xiaomi_miio
+    host: 192.168.3.3
+    token: !secret xiaomi_airpurifier_token
+
+shelly:
+  cloud_auth_key: !secret shellyAuthKey
+  cloud_server: !secret shellyCloudServer
+  username: !secret shellyWebOberflaecheUser
+  password: !secret shellyWebOberflaechePassw
+
+
+tado:
+  username: !secret tado_user
+  password: !secret tado_pw
+
+#https://github.com/lukas-hetzenecker/home-assistant-remote
+#remote_homeassistant:
+#  instances:
+#  - host: 192.168.3.75
+#    port: 8123
+#    secure: false
+#    verify_ssl: false
+#    access_token: !secret remote_hass
+
+input_datetime:
+  vacation_date_and_time:
+    name: Input when you are back
+    has_date: true
+    has_time: true
+
+input_select:
+  hass_theme:
+    name: HASS Themes
+    options:
+      - default
+      - clear
+      - greenslate
+      - slate
+      - slateorig
+      - dwains-theme-dark
+
+    initial: default
+    icon: mdi:theme-light-dark
+  vacation_mode:
+    name: Vacation Mode
+    options:
+      - yes
+      - no
+    initial: no
+  house_guests:
+    name: Some Guests
+    options:
+      - yes
+      - no
+    initial: no
+  night_mode:
+    name: Night Mode
+    options:
+      - yes
+      - no
+    initial: no
+
+
+
+# Wird für den alexa skill benötigt
+api:
+
+alexa:
+  smart_home:
+    filter:
+      include_entities:
+        - fan.xiaomi_miio_device
+        - light.gateway_light_f0b429cc1094
+        - sensor.miflora_battery
+        - sensor.miflora_battery_2
+        - sensor.miflora_conductivity
+        - sensor.miflora_conductivity_2
+        - sensor.miflora_herbs2_battery
+        - sensor.miflora_herbs2_conductivity
+        - sensor.miflora_herbs2_light
+        - sensor.miflora_herbs2_moisture
+        - sensor.miflora_herbs2_temperature
+        - sensor.miflora_herbs_battery
+        - sensor.miflora_herbs_conductivity
+        - sensor.miflora_herbs_light
+        - sensor.miflora_herbs_moisture
+        - sensor.miflora_herbs_temperature
+        - sensor.server_current
+        - sensor.server_total
+        - sensor.unavailable
+        - switch.certbot
+        - switch.filebrowser
+        - switch.guacamole
+        - switch.jdownloader
+        - switch.mqtt
+        - switch.nginx
+        - switch.portainer
+        - switch.seafile
+        - switch.tv2
+      # exclude_domains:
+      #   - light
+      #   - climate
+
+
+
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_api_key
+    allowed_chat_ids:
+      - !secret telegram_chatid
+
+dialogflow:
+intent_script:
+  TemperaturIntent:
+    speech:
+      type: plain
+      text: >
+        {%- for state in states.sensor -%}
+          {% if (state.attributes.unit_of_measurement == '°C') and ('CPU' not in state.attributes.friendly_name) and (Room in state.attributes.friendly_name|lower) -%}
+            The temperatur in {{ state.attributes.friendly_name | replace('_', '\_') | replace('Temp', '') }} is {{ state.state | replace('_', '\_') }} degrees {{ '\n' }}
+          {%- endif %}
+        {%- endfor -%}
+
+  TemperaturAllIntent:
+    speech:
+      type: plain
+      text: >
+        {%- for state in states.sensor -%}
+          {% if (state.attributes.unit_of_measurement == '°C') and ('CPU' not in state.attributes.friendly_name) -%}
+            The temperatur in {{ state.attributes.friendly_name | replace('_', '\_') | replace('Temp', '') }} is {{ state.state | replace('_', '\_') }} degrees {{ '\n' }}
+          {%- endif %}
+        {%- endfor -%}
+
+  HumidityIntent:
+    speech:
+      type: plain
+      text: >
+        {%- for state in states.sensor -%}
+          {% if (state.attributes.unit_of_measurement == '%') and ('Humidity' in state.attributes.friendly_name) and (Room in state.attributes.friendly_name|lower) -%}
+            The humidity in {{ state.attributes.friendly_name | replace('_', '\_') | replace('Humidity', '') }} is {{ state.state | replace('_', '\_') }} percent {{ '\n' }}
+          {%- endif %}
+        {%- endfor -%}
+
+  HumidityAllIntent:
+    speech:
+      type: plain
+      text: >
+        {%- for state in states.sensor -%}
+          {% if (state.attributes.unit_of_measurement == '%') and ('Humidity' in state.attributes.friendly_name) -%}
+            The humidity in {{ state.attributes.friendly_name | replace('_', '\_') | replace('Humidity', '') }} is {{ state.state | replace('_', '\_') }} percent {{ '\n' }}
+          {%- endif %}
+        {%- endfor -%}
+
+  RebootIntent:
+    speech:
+      type: plain
+      text: !include alexa_confirm.yaml
+    action:
+      service: script.restart_hass
+
+  UpdateIntent:
+    speech:
+      type: plain
+      text: >
+        {%- if states.sensor.newest_ha_version and states.sensor.currently_installed_version  -%}
+            {%- if states.sensor.newest_ha_version.state > states.sensor.currently_installed_version.state  -%}
+              Update has been triggered. Deploying {{states.sensor.newest_ha_version.state}}
+            {%- elif states.sensor.newest_ha_version.state <= states.sensor.currently_installed_version.state -%}
+              No update available.
+            {%- else -%}
+              Sensors comparison failed.
+            {%- endif -%}
+        {%- else -%}
+          Sensors not definied.
+        {%- endif -%}
+    action:
+      - service_template: >
+          {%- if states.sensor.newest_ha_version.state > states.sensor.currently_installed_version.state  -%}
+            script.update_hass
+          {%- endif -%}
+
+
+
+  VacuumTurnOnIntent:
+    speech:
+      type: plain
+      text: !include alexa_confirm.yaml
+    action:
+      service: vacuum.turn_on

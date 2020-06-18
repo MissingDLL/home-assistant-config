@@ -1,0 +1,349 @@
+- alias: Shelly Status Info at Start
+  id: ssias
+  trigger:
+  - platform: homeassistant
+    event: start
+  action:
+  - service: mqtt.publish
+    data:
+      topic: shellies/command
+      payload: update
+
+
+- id: id14
+  alias: Telegram bot that reply to temp
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: /temp
+  action:
+  - service: notify.telegram
+    data_template:
+      message: "{%- for state in states.sensor -%}\n  {% if (state.attributes.unit_of_measurement\
+        \ == '°C') and ('CPU' not in state.attributes.friendly_name) -%}\n    {{ state.attributes.friendly_name\
+        \ | replace('_', '\\_') }}: {{ state.state | replace('_', '\\_') }} °C{{ '\\\
+        n' }} \n  {%- endif %}\n{%- endfor -%}\n"
+
+- id: id15
+  alias: Telegram bot that reply to humi
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: /humi
+  action:
+  - service: notify.telegram
+    data_template:
+      message: "{%- for state in states.sensor -%}\n  {% if (state.attributes.unit_of_measurement\
+        \ == '%') and ('Humidity' in state.attributes.friendly_name) -%}\n    {{ state.attributes.friendly_name\
+        \ | replace('_', '\\_') }}: {{ state.state | replace('_', '\\_') }} %{{ '\\\
+        n' }} \n  {%- endif %}\n{%- endfor -%}\n"
+
+- id: id16
+  alias: 'Telegram bot that battary '
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: /battery
+  action:
+  - service: notify.telegram
+    data_template:
+      message: "{%- for state in states.sensor -%}\n  {% if (state.attributes.unit_of_measurement\
+        \ == '%') and ('Battery' in state.attributes.friendly_name) -%}\n    {{ state.attributes.friendly_name\
+        \ | replace('_', '\\_') }}: {{ state.state | replace('_', '\\_') }} %{{ '\\\
+        n' }} \n  {%- endif %}\n{%- endfor -%}\n"
+
+- id: id17
+  alias: Telegram bot that replies commands
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: /commands
+  action:
+  - service: notify.telegram
+    data:
+      message: Here are the available commands
+      data:
+        keyboard:
+        - /temp, /humi, /restart_hass, /battery
+- id: id19
+  alias: Telegram bot restart HASS
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: /restart_hass
+  action:
+  - service: notify.telegram
+    data_template:
+      message: Restart of HASS has been triggered.
+  - service: homeassistant.restart
+
+- id: hass_theme
+  alias: hass_theme
+  initial_state: 'on'
+  trigger:
+  - platform: state
+    entity_id: input_select.hass_theme
+  action:
+  - service: frontend.set_theme
+    data_template:
+      name: '{{ states.input_select.hass_theme.state }}'
+
+- id: theme
+  alias: Automatic Theme Change
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: sun.sun
+    to: above_horizon
+  - platform: state
+    entity_id: sun.sun
+    to: below_horizon
+  action:
+  - service_template: frontend.set_theme
+    data_template:
+      name: "{% if states.sun.sun.state == \"above_horizon\" %}\n  clear\n{% else\
+        \ %}\n  slate\n{% endif %}"
+
+
+- id: '1573080951695'
+  alias: Update notification
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.updater
+#    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data:
+      message: There is a new Home Assistant release available.
+    service: notify.mobile_app_iphone
+
+
+- id: id13
+  alias: low_battery_notification
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.bath_battery
+    - sensor.bath_motion_battery
+#    - sensor.bath_wall_switch_battery
+    - sensor.bedroom_battery
+    - sensor.bedroom_smart_switch_battery
+#    - sensor.bedroom_wall_switch_battery
+    - sensor.office_battery
+#    - sensor.kitchen_wall_switch_battery
+#    - sensor.livingroom_wall_switch_battery
+    - sensor.flur_battery
+    - sensor.flur_motion_battery
+    # - binary_sensor.door_window_sensor_158d0002bfa26f
+    # - binary_sensor.door_window_sensor_158d00040be0ec
+    # - binary_sensor.door_window_sensor_158d00040be0f4
+    # - binary_sensor.door_window_sensor_158d00041fda51
+    # - binary_sensor.door_window_sensor_158d0004201dfb
+    # - binary_sensor.door_window_sensor_158d00042321c9
+    # - binary_sensor.door_window_sensor_158d0004234944
+    below: 20
+  action:
+  - service: notify.mobile_app_iphone
+    data_template:
+      message: '{{ trigger.to_state.name }} battery level has dropped below 20%'
+
+
+- id: alarm when water
+  alias: alarm when water
+  initial_state: 'on'
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d0001d53082
+    from: 'off'
+    to: 'on'
+  action:
+  - service: notify.mobile_app_iphone
+    data:
+      title: 'ALARM'
+      message: "Water leak Sensor in Alarm State"
+      data:
+        sticky: 'true' # or 'false'
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1.0
+
+
+- id: Refresh_unavailable_Sensor
+  alias: "System - Refresh sensor.unavailable"
+  initial_state: 'on'
+  trigger:
+    platform: time_pattern
+    minutes: '/1'
+  action:
+    - service: homeassistant.update_entity
+      data:
+        entity_id: sensor.unavailable
+
+- id: Enable_unavailable_Automation
+  alias: "Enable unavailable Automation after 15 Minutes"
+  initial_state: 'on'
+  trigger:
+    - platform: homeassistant
+      event: start
+  action:
+    - delay:
+        minutes: 15
+    - service: automation.turn_on
+      data:
+        entity_id: automation.notify_when_something_is_unavailable
+
+- id: Notify_when_something_unavailable
+  alias: "Notify when something is unavailable"
+  initial_state: 'off'
+  trigger:
+  - platform: state
+    entity_id: sensor.unavailable
+  condition:
+    condition: template
+    value_template: "{% if states('sensor.unavailable') | int > 0 %}true{% endif %}"
+  action:
+  - service: notify.mobile_app_iphone
+    data_template:
+      message: '{{ trigger.to_state.state }} Devices are in status unavailable. {{ trigger.to_state.attributes.entities }} '
+      data:
+        apns_headers:
+          'apns-collapse-id': 'sensor-unavailable'
+
+- id: Notify_when_everything_available
+  alias: "Notify when everything is available"
+  trigger:
+  - platform: state
+    entity_id: sensor.unavailable
+    to: '0'
+  action:
+  - service: notify.mobile_app_iphone
+    data_template:
+      message: 'All devices are in status available again.'
+      data:
+        apns_headers:
+          'apns-collapse-id': 'sensor-unavailable'
+
+
+##### Heizung
+
+- id: toggle_bath_climate
+  alias: toggle bath climate when window opens/closes
+  initial_state: 'on'
+  trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0004234944
+  action:
+    - service_template: climate.set_hvac_mode
+      data_template:
+        entity_id: climate.bad
+        hvac_mode: "{% if states.binary_sensor.door_window_sensor_158d0004234944.state == \"on\" %}off{% else\
+          \ %}auto{% endif %}"    
+#    - service: notify.mobile_app_iphone
+#      data_template:
+#        message: "{% if states.binary_sensor.door_window_sensor_158d0004234944.state == \"on\" %}Set Bath-climate to off.{% else\
+#          \ %}Set Bath-climate to auto.{% endif %}"
+#        data:
+#          apns_headers:
+#            'apns-collapse-id': 'climate-bath'
+
+
+- id: toggle_office_climate
+  alias: toggle office climate when window opens/closes
+  initial_state: 'on'
+  trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0004201dfb
+  action:
+    - service_template: climate.set_hvac_mode
+      data_template:
+        entity_id: climate.buro
+        hvac_mode: "{% if states.binary_sensor.door_window_sensor_158d0004201dfb.state == \"on\" %}off{% else\
+          \ %}auto{% endif %}"    
+ #   - service: notify.mobile_app_iphone
+ #     data_template:
+ #       message: "{% if states.binary_sensor.door_window_sensor_158d0004201dfb.state == \"on\" %}Set Office-climate to off.{% else\
+ #         \ %}Set Office-climate to auto.{% endif %}"
+ #       data:
+ #         apns_headers:
+ #           'apns-collapse-id': 'climate-office'
+
+
+- id: toggle_livingroom_climate
+  alias: toggle livingroom climate when window opens/closes
+  initial_state: 'on'
+  trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00042321c9
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00041fda51
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002bfa26f
+  action:
+    - service_template: climate.set_hvac_mode
+      data_template:
+        entity_id: climate.wohnzimmer
+        hvac_mode: "{% if (states.binary_sensor.door_window_sensor_158d00042321c9.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00041fda51.state == \"on\") or (states.binary_sensor.door_window_sensor_158d0002bfa26f.state == \"on\") %}off{% else\
+          \ %}auto{% endif %}"    
+#    - service: notify.mobile_app_iphone
+#      data_template:
+#        message: "{% if (states.binary_sensor.door_window_sensor_158d00042321c9.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00041fda51.state == \"on\") or (states.binary_sensor.door_window_sensor_158d0002bfa26f.state == \"on\") %}Set Livingroom-climate to off.{% else\
+#          \ %}Set Livingroom-climate to auto.{% endif %}"
+#        data:
+#          apns_headers:
+#            'apns-collapse-id': 'climate-livingroom'
+
+- id: toggle_bedroom_climate
+  alias: toggle bedroom climate when window opens/closes
+  initial_state: 'on'
+  trigger:
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00040be0f4
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d00040be0ec
+  action:
+    - service_template: climate.set_hvac_mode
+      data_template:
+        entity_id: climate.schlafzimmer
+        hvac_mode: "{% if (states.binary_sensor.door_window_sensor_158d00040be0f4.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00040be0ec.state == \"on\") %}off{% else\
+          \ %}auto{% endif %}"    
+#    - service: notify.mobile_app_iphone
+#      data_template:
+#        message: "{% if (states.binary_sensor.door_window_sensor_158d00040be0f4.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00040be0ec.state == \"on\")  %}Set Bedroom-climate to off.{% else\
+#          \ %}Set Bedroom-climate to auto.{% endif %}"
+#        data:
+#          apns_headers:
+#            'apns-collapse-id': 'climate-bedroom'
+
+# - alias: 'Battery Alert'
+#   trigger:
+#     - platform: time
+#       at: '00:14:00'
+#     - platform: time
+#       at: '18:00:00'
+#   condition:
+#     condition: template
+#     value_template: "{% if states('sensor.low_battery') %}true{% endif %}"
+#   action:
+#     - service: persistent_notification.create
+#       data_template:
+#         title: Low Battery
+#         message: "{{ states('sensor.low_battery') }}"
+#         notification_id: low-battery-alert
