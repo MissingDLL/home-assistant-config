@@ -1,0 +1,73 @@
+stages:
+  - test
+  - deploy
+  - notify
+
+
+test:
+  stage: test
+  image: homeassistant/amd64-homeassistant
+  except:
+    changes:
+      - README.md
+      - .gitlab-ci.yml
+      - .gitignore
+      - .ios.conf 
+  script:
+    - mv ci_secrets.yaml secrets.yaml
+    - hass --script check_config -c .
+
+deploy:
+  stage: deploy
+  image: ubuntu:latest
+  except:
+    changes:
+      - README.md
+      - .gitlab-ci.yml
+      - .gitignore
+      - .ios.conf 
+  only:
+    - master
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd '$DEPLOY_PATH'; git pull; docker restart home-assistant-new"
+
+
+notify_success:
+  stage: notify
+#  allow_failure: true
+  image: ubuntu:latest
+  only:
+    - master
+  except:
+    changes:
+      - README.md
+      - .gitlab-ci.yml
+      - .gitignore
+      - .ios.conf 
+  before_script:
+    - 'which curl || ( apt-get update -y && apt-get install curl -y )'
+  script:
+    - curl -X POST "https://api.telegram.org/bot379239198:AAF4L6yD6aJlMveZms0HVgEq65x99gNt7Ek/sendMessage" -d "chat_id=342092659&text=New Hass config deployed successfully!"
+notify_fail:
+  stage: notify
+#  allow_failure: true
+  image: ubuntu:latest
+  except:
+    changes:
+      - README.md
+      - .gitlab-ci.yml
+      - .gitignore
+      - .ios.conf 
+  when: on_failure
+  before_script:
+    - 'which curl || ( apt-get update -y && apt-get install curl -y )'
+  script:
+    - curl -X POST "https://api.telegram.org/bot379239198:AAF4L6yD6aJlMveZms0HVgEq65x99gNt7Ek/sendMessage" -d "chat_id=342092659&text=New Hass config failed. Please check for errors"
