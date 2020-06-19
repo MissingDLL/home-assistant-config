@@ -94,11 +94,11 @@ tplink:
 plant:
   flower1:
     sensors:
-      moisture: sensor.miflora_herbs_moisture
-      battery: sensor.miflora_herbs_battery
-      temperature: sensor.miflora_herbs_temperature
-      conductivity: sensor.miflora_herbs_conductivity
-      brightness: sensor.miflora_herbs_light
+      moisture: sensor.miflora_moisture
+      battery: sensor.miflora_battery
+      temperature: sensor.miflora_temperature
+      conductivity: sensor.miflora_conductivity
+      brightness: sensor.miflora_light
     min_moisture: 15
     max_moisture: 60
     min_battery: 17
@@ -106,11 +106,11 @@ plant:
     min_temperature: 8
   flower2:
     sensors:
-      moisture: sensor.miflora_herbs2_moisture
-      battery: sensor.miflora_herbs2_battery
-      temperature: sensor.miflora_herbs2_temperature
-      conductivity: sensor.miflora_herbs2_conductivity
-      brightness: sensor.miflora_herbs2_light
+      moisture: sensor.miflora_moisture_2
+      battery: sensor.miflora_battery_2
+      temperature: sensor.miflora2_temperature_2
+      conductivity: sensor.miflora_conductivity_2
+      brightness: sensor.miflora_light_2
     min_moisture: 15
     max_moisture: 60
     min_battery: 17
