@@ -83,11 +83,15 @@ binary_sensor.motion_sensor_158d0004521bf6:
 
 # binary_sensor.wall_switch_left_158d00013e6924:
 #   friendly_name: Livingroom right
-# binary_sensor.wall_switch_right_158d00013e72f2:
-#   friendly_name: Bedroom right
 
-# binary_sensor.wall_switch_left_158d00013e72f2:
-#   friendly_name: Bedroom right
+binary_sensor.wall_switch_both_158d00013e72f2:
+  friendly_name: Xiao Cover Both click
+
+binary_sensor.wall_switch_right_158d00013e72f2:
+  friendly_name: Xiao Cover Right click
+
+binary_sensor.wall_switch_left_158d00013e72f2:
+  friendly_name: Xiao Cover Left click
 
 binary_sensor.switch_158d000155e18a:
   friendly_name: Smart switch Flur

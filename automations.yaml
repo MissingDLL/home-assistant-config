@@ -249,7 +249,7 @@
       data_template:
         entity_id: climate.bad
         hvac_mode: "{% if states.binary_sensor.door_window_sensor_158d0004234944.state == \"on\" %}off{% else\
-          \ %}auto{% endif %}"    
+          \ %}auto{% endif %}"
 #    - service: notify.mobile_app_iphone
 #      data_template:
 #        message: "{% if states.binary_sensor.door_window_sensor_158d0004234944.state == \"on\" %}Set Bath-climate to off.{% else\
@@ -272,7 +272,7 @@
       data_template:
         entity_id: climate.buro
         hvac_mode: "{% if states.binary_sensor.door_window_sensor_158d0004201dfb.state == \"on\" %}off{% else\
-          \ %}auto{% endif %}"    
+          \ %}auto{% endif %}"
  #   - service: notify.mobile_app_iphone
  #     data_template:
  #       message: "{% if states.binary_sensor.door_window_sensor_158d0004201dfb.state == \"on\" %}Set Office-climate to off.{% else\
@@ -299,7 +299,7 @@
       data_template:
         entity_id: climate.wohnzimmer
         hvac_mode: "{% if (states.binary_sensor.door_window_sensor_158d00042321c9.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00041fda51.state == \"on\") or (states.binary_sensor.door_window_sensor_158d0002bfa26f.state == \"on\") %}off{% else\
-          \ %}auto{% endif %}"    
+          \ %}auto{% endif %}"
 #    - service: notify.mobile_app_iphone
 #      data_template:
 #        message: "{% if (states.binary_sensor.door_window_sensor_158d00042321c9.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00041fda51.state == \"on\") or (states.binary_sensor.door_window_sensor_158d0002bfa26f.state == \"on\") %}Set Livingroom-climate to off.{% else\
@@ -323,7 +323,7 @@
       data_template:
         entity_id: climate.schlafzimmer
         hvac_mode: "{% if (states.binary_sensor.door_window_sensor_158d00040be0f4.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00040be0ec.state == \"on\") %}off{% else\
-          \ %}auto{% endif %}"    
+          \ %}auto{% endif %}"
 #    - service: notify.mobile_app_iphone
 #      data_template:
 #        message: "{% if (states.binary_sensor.door_window_sensor_158d00040be0f4.state == \"on\") or (states.binary_sensor.door_window_sensor_158d00040be0ec.state == \"on\")  %}Set Bedroom-climate to off.{% else\
@@ -331,6 +331,7 @@
 #        data:
 #          apns_headers:
 #            'apns-collapse-id': 'climate-bedroom'
+
 
 # - alias: 'Battery Alert'
 #   trigger:
@@ -347,3 +348,21 @@
 #         title: Low Battery
 #         message: "{{ states('sensor.low_battery') }}"
 #         notification_id: low-battery-alert
+
+
+
+
+
+
+- alias: Decrease brightness of the gateway light
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.wall_switch_left_158d00013e72f2
+      click_type: single
+  action:
+    service: cover.set_cover_position
+    entity_id: cover.shelly_shsw_21_13476d
+    position: "{% if (statescover.shelly_shsw_21_13476d.state == \"open\") or (statescover.shelly_shsw_21_13476d.state == \"opening\") %}0{% else\
+        \ %}100{% endif %}"
