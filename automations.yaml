@@ -362,7 +362,7 @@
       entity_id: binary_sensor.wall_switch_left_158d00013e72f2
       click_type: single
   action:
-    service: cover.set_cover_position
-    entity_id: cover.shelly_shsw_21_13476d
-    position: "{% if (statescover.shelly_shsw_21_13476d.state == \"open\") or (statescover.shelly_shsw_21_13476d.state == \"opening\") %}0{% else\
-        \ %}100{% endif %}"
+    - service: cover.set_cover_position
+      entity_id: cover.shelly_shsw_21_13476d
+      position: "{% if (statescover.shelly_shsw_21_13476d.state == \"open\") or (statescover.shelly_shsw_21_13476d.state == \"opening\") %}0{% else\
+          \ %}100{% endif %}"
