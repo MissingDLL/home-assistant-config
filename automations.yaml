@@ -363,6 +363,7 @@
       click_type: single
   action:
     - service: cover.set_cover_position
-      entity_id: cover.shelly_shsw_21_13476d
-      position: "{% if (statescover.shelly_shsw_21_13476d.state == \"open\") or (statescover.shelly_shsw_21_13476d.state == \"opening\") %}0{% else\
+      data_template:
+        entity_id: cover.shelly_shsw_21_13476d
+        position: "{% if (statescover.shelly_shsw_21_13476d.state == \"open\") or (statescover.shelly_shsw_21_13476d.state == \"opening\") %}0{% else\
           \ %}100{% endif %}"
